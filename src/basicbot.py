@@ -20,12 +20,19 @@ class BasicBot(ircbot.IrcBot):
 	to delegate commands to methods and will log events.
 	"""
 
-	PublicCommands	= { }
-
 	def __init__(self, conffile="config"):
 		super(BasicBot, self).__init__(conffile)
 		self.tbf=tbf.TokenBucketFilter()
 		self.people={}
+
+		self.add_global_handler("namreply", self._nicktrack_namreply)
+		self.add_global_handler("join", self._nicktrack_join)
+		self.add_global_handler("part", self._nicktrack_part)
+		self.add_global_handler("quit", self._nicktrack_quit)
+		self.add_global_handler("privmsg", self._nicktrack_log)
+		self.add_global_handler("pubmsg", self._nicktrack_log)
+		self.add_global_handler("topic", self._nicktrack_log)
+		self.add_global_handler("nick", self._nicktrack_nick)
 
 
 	def CheckLimit(self, weight=1):
@@ -43,20 +50,7 @@ class BasicBot(ircbot.IrcBot):
 		return self.people[nick]
 
 
-	def OnConnect(self, connection, event):
-		"""IRC event method - server connection established.
-
-		This method is called when the connection to an IRC server
-		is fully established.
-
-		@param connection IRC connection instance
-		@param event      IRC event causing this method invocation
-		"""
-		self.logger.info("connection to server %s completed" % 
-			self.connection.get_server_name())
-
-
-	def OnNamReply(self,connection,event):
+	def _nicktrack_namreply(self, connection, event):
 		"""IRC event method - name received.
 
 		This method is called when information about a name/
@@ -76,19 +70,7 @@ class BasicBot(ircbot.IrcBot):
 		self.logger.info("Person on channel: %s" % event.arguments()[2])
 
 
-	def OnEndOfNames(self, connection, event):
-		"""IRC event method - end of name list.
-
-		This method is called when information all names have been
-		transmitted.
-
-		@param connection IRC connection instance
-		@param event      IRC event causing this method invocation
-		"""
-		self.logger.info("End of namelist, join completed")
-
-
-	def OnJoin(self, connection, event):
+	def _nicktrack_join(self, connection, event):
 		"""IRC event method - user joined our channel.
 
 		This method is called when a user joins a channel we are on.
@@ -97,12 +79,13 @@ class BasicBot(ircbot.IrcBot):
 		@param connection IRC connection instance
 		@param event      IRC event causing this method invocation
 		"""
-		self.logger.info("%s joined %s" % (event.source(), event.target()))
+		self.logger.info("%s joined %s" % (event.source(),
+						event.target()))
 		nick=irclib.nm_to_n(event.source())
 		self.people[nick]=Nick(nick, mask=event.source())
 
 
-	def OnPart(self, connection, event):
+	def _nicktrack_part(self, connection, event):
 		"""IRC event method - user parted our channel.
 
 		This method is called when a user parts from channel we are on.
@@ -118,7 +101,7 @@ class BasicBot(ircbot.IrcBot):
 		self.logger.info("%s parted channel %s" % (nick, event.target()))
 
 
-	def OnQuit(self, connection, event):
+	def _nicktrack_quit(self, connection, event):
 		"""IRC event method - user quits.
 
 		This method is called when a user quits irc while he is on a
@@ -135,76 +118,22 @@ class BasicBot(ircbot.IrcBot):
 			(nick, event.arguments()[0]))
 
 
-	def OnPrivMsg(self, connection, event):
-		"""IRC event method - private message.
+	def _nicktrack_log(self, connection, event):
+		"""IRC event method - we saw a user talk.
 
-		This method is called when a user sends a privmsg to us.
-
-		@param connection IRC connection instance
-		@param event      IRC event causing this method invocation
-		"""
-		content = event.arguments()
-		self.logger.info("privmsg: %s : %s" % 
-			(irclib.nm_to_n(event.source()), content[0]))
-		self.RegisterNick(event)
-
-
-
-	def OnPubMsg(self, connection, event):
-		"""IRC event method - public message.
-
-		This method is called when we receive a public (on-channel)
-		message from a user.
+		This method is called when a user talks to use using a
+		pubmsg or privmsg.
 
 		@param connection IRC connection instance
 		@param event      IRC event causing this method invocation
 		"""
 		content = event.arguments()
-		self.logger.info("pubmsg: %s : %s" % 
+		self.logger.info("talked: %s : %s" % 
 			(irclib.nm_to_n(event.source()), content[0]))
 		self.RegisterNick(event)
 
 
-	def OnCTCP(self, connection, event):
-		"""IRC event method - CTCP event recieved.
-
-		This method is called when we receive a CTCP event.
-
-		@param connection IRC connection instance
-		@param event      IRC event causing this method invocation
-		"""
-		if event.arguments()[0]=="ACTION" and len(event.arguments()) > 1:
-			print " * "+irclib.nm_to_n(event.source())+" "+event.arguments()[1]
-
-
-	def OnTopic(self, connection, event):
-		"""IRC event method - channel topic change.
-
-		This method is called when the topic on one of our channels
-		is changed.
-
-		@param connection IRC connection instance
-		@param event      IRC event causing this method invocation
-		"""
-		self.logger.info("%s changed topic to %s" %
-			(event.source(), event.arguments()[0]))
-		self.RegisterNick(event)
-	
-
-	def OnDisconnect(self, connection, event):
-		"""IRC event method - disconnect from irc
-
-		This method is called when we are disconnected from the
-		IRC server.
-
-		@param connection IRC connection instance
-		@param event      IRC event causing this method invocation
-		"""
-		self.logger.warn("Disconnect received, exiting")
-		sys.exit(1)
-		
-
-	def OnNick(self, connection, event):
+	def _nicktrack_nick(self, connection, event):
 		"""IRC event method - nick change
 
 		This method is called when someone who shares a channel with
