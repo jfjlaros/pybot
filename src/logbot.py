@@ -8,7 +8,7 @@ class LogBot(sqlbot.SQLBot):
 		r"\b(?P<url>(?P<scheme>http|https|ftp)://"
 		r"(?:(?P<login>(?P<username>[a-zA-Z0-9]+)(?::(?P<password>[A-Za-z0-9]+))?)@)?"
 		r"(?P<hostname>[A-Za-z0-9.-]+(?::(?P<port>[0-9]+))?)"
-		r"(?P<path>[A-Za-z0-9@~=?/.&;#+-]*))")
+		r"(?P<path>[A-Za-z0-9@~=?/.,&;#+-]*))")
 
 	def __init__(self, *args, **kwargs):
 		super(LogBot, self).__init__(*args, **kwargs)
