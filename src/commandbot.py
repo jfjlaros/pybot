@@ -23,6 +23,8 @@ class CommandBot(nicktrack.Nicktrack):
 			return None
 		if len(data)==1:
 			data.append("")
+		if data[0][0]!='!':
+			return None
 		(command,data)=(data[0][1:], data[1])
 		if command not in self.commands:
 			return None
