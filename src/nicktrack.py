@@ -25,14 +25,14 @@ class Nicktrack(ircbot.IrcBot):
 		self.tbf=tbf.TokenBucketFilter()
 		self.people={}
 
-		self.add_global_handler("namreply", self._nicktrack_namreply)
-		self.add_global_handler("join", self._nicktrack_join)
-		self.add_global_handler("part", self._nicktrack_part)
-		self.add_global_handler("quit", self._nicktrack_quit)
-		self.add_global_handler("privmsg", self._nicktrack_log)
-		self.add_global_handler("pubmsg", self._nicktrack_log)
-		self.add_global_handler("topic", self._nicktrack_log)
-		self.add_global_handler("nick", self._nicktrack_nick)
+		self.add_global_handler("namreply", self._nicktrack_namreply, -30)
+		self.add_global_handler("join", self._nicktrack_join, -30)
+		self.add_global_handler("part", self._nicktrack_part, -30)
+		self.add_global_handler("quit", self._nicktrack_quit, -30)
+		self.add_global_handler("privmsg", self._nicktrack_log, -30)
+		self.add_global_handler("pubmsg", self._nicktrack_log, -30)
+		self.add_global_handler("topic", self._nicktrack_log, -30)
+		self.add_global_handler("nick", self._nicktrack_nick, -30)
 
 
 	def CheckLimit(self, weight=1):
