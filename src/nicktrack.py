@@ -43,7 +43,8 @@ class Nicktrack(ircbot.IrcBot):
 		nick=irclib.nm_to_n(event.source())
 		if not nick in self.people:
 			self.people[nick]=Nick(nick, event.source())
-		elif not hasattr(self.people[nick], "mask"):
+		if (not hasattr(self.people[nick], "mask")) and 
+			"!" in event.source():
 			self.people[nick].mask=irclib.nm_to_uh(event.source())
 
 		self.people[nick].seen=datetime.datetime.now()
