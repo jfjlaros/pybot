@@ -4,8 +4,7 @@ import logging
 from dhm import config, nestdict
 import irclib
 
-
-class IrcBot:
+class IrcBot(object):
 	"""Generic IRC bot code.
 
 	This class implements the basis of an irc bot: it takes care of
@@ -18,7 +17,6 @@ class IrcBot:
 	
 	@ivar connection: IRC connection instance
 	@ivar     server: IRC server instance
-	@ivar        tbf: Token Bucket Filter used to rate-limit our actions
 	@ivar     logger: logging object
 	"""
 
@@ -34,13 +32,16 @@ class IrcBot:
 		self.irc=irclib.IRC()
 		self.server=self.irc.server()
 
-		self.logger.info("Connecting to irc server " + self.config["IRC/server"])
+		self.logger.info("Connecting to irc server " + 
+				self.config["IRC/server"])
 		self.connection=self.server.connect(self.config["IRC/server"],
 			self.config["IRC/port"], self.config["IRC/nick"])
 
-		self.logger.info("Trying to join channel " + self.config["IRC/channel"])
+		self.logger.info("Trying to join channel " + 
+				self.config["IRC/channel"])
 		if self.config.has_key("IRC/password"):
-			self.server.join(self.config["IRC/channel"], self.config["IRC/password"])
+			self.server.join(self.config["IRC/channel"],
+					self.config["IRC/password"])
 		else:
 			self.server.join(self.config["IRC/channel"])
 		
