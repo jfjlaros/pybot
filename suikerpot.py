@@ -40,6 +40,8 @@ class SuikerPot(basicbot.BasicBot):
 
 		args=msg[1:].split(None, 1)
 		(cmd,args)=(args[0], args[1:])
+		if args:
+			args=args[0]
 		func="PubCmd"+cmd.capitalize()
 		if msg[0]=='!' and hasattr(self, func):
 			nick=self.people[irclib.nm_to_n(event.source())]
@@ -52,6 +54,8 @@ class SuikerPot(basicbot.BasicBot):
 		msg=event.arguments()[0]
 		args=msg[1:].split(None, 1)
 		(cmd,args)=(args[0], args[1:])
+		if args:
+			args=args[0]
 		func="PrivCmd"+cmd.capitalize()
 		if msg[0]=='!' and hasattr(self, func):
 			nick=self.people[irclib.nm_to_n(event.source())]
@@ -89,6 +93,23 @@ class SuikerPot(basicbot.BasicBot):
 					self.config["messages/klant"])
 
 
+	def PrivCmdSay(self, nick, args):
+		if IsFriend(nick):
+			try:
+				(channel,msg)=args.split(None, 1)
+				self.server.privmsg(channel, msg)
+			except ValueError:
+				self.server.privmsg(nick.nick,
+						"Not enough parameters")
+
+	def PrivCmdDo(self, nick, args):
+		if IsFriend(nick):
+			try:
+				(channel,msg)=args.split(None, 1)
+				self.server.ctcp("ACTION", channel, msg)
+			except ValueError:
+				self.server.privmsg(nick.nick,
+						"Not enough parameters")
 
 	def PrivCmdOp(self, nick, args):
 		if IsFriend(nick)>1:
