@@ -2,7 +2,16 @@ IRC {
 	channel		"#debian-devel";
 	server		"irc.eu.oftc.net";
 	port		6667;
-	nick		"SuikerPot";
+	nick		"thora";
+};
+
+SQL {
+	driver		"postgres";
+	server		"localhost";
+	username	"thora";
+	password	"ioch6Oowuoheuchi";
+	database	"wiggy.net";
+	table		"debiandevel";
 };
 
 messages {
