@@ -44,7 +44,7 @@ class Nicktrack(ircbot.IrcBot):
 		if not nick in self.people:
 			self.people[nick]=Nick(nick, event.source())
 		elif not hasattr(self.people[nick], "mask"):
-			self.people[nick].mask=event.source()
+			self.people[nick].mask=irclib.nm_to_uh(event.source())
 
 		self.people[nick].seen=datetime.datetime.now()
 		return self.people[nick]
@@ -59,7 +59,8 @@ class Nicktrack(ircbot.IrcBot):
 		@param connection IRC connection instance
 		@param event      IRC event causing this method invocation
 		"""
-		for nick in event.arguments()[2]:
+		print "namreply arguments: %s" % str(event.arguments())
+		for nick in event.arguments()[2].split():
 			if nick[0]=='@':
 				self.people[nick[1:]]=Nick(nick[1:], ops=True)
 			elif nick[0]=='+':
@@ -143,8 +144,10 @@ class Nicktrack(ircbot.IrcBot):
 		@param event      IRC event causing this method invocation
 		"""
 		nick=self.RegisterNick(event)
-		self.logger.info("%s changed nick to %s" %
-			(nick.nick, event.target()))
-		self.people[event.target()]=self.people[nick.nick]
-		del self.people[nick.nick]
+		oldnick=nick.nick
+		newnick=event.target()
+		self.logger.info("%s changed nick to %s" % (oldnick, newnick))
+		self.people[newnick]=self.people[oldnick]
+		self.people[newnick].nick=newnick
+		del self.people[oldnick]
 
