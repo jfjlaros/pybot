@@ -5,13 +5,13 @@ import commandbot
 class VoteBot(commandbot.CommandBot):
 	def __init__(self, *args, **kwargs):
 		super(VoteBot, self).__init__(*args, **kwargs)
-
 		self.commands["vote"]=self._votebot_vote
 	
+
 	def _votebot_vote(self, nick, text):
 		params=text.strip().split()
 		if len(params)!=1:
-			return
+			return "Usage: !vote (start|stop|yes|no|abstain)"
 
 		command=params[0].lower()
 		if command=="start":
@@ -34,15 +34,9 @@ class VoteBot(commandbot.CommandBot):
 				result="tie"
 			return ("vote result: %s. %d yes votes, %d no votes and %d abstains" %
 				(result, votes["yes"], votes["no"], votes["abstain"]))
-
-
-		elif command=="yes":
-			nick.vote="yes"
-			return "Noted yes vote from %s" % nick.nick
-		elif command=="no":
-			nick.vote="no"
-			return "Noted no vote from %s" % nick.nick
-		elif command=="abstain":
-			nick.vote="abstain"
-			return "Noted that %s abstains" % nick.nick
+		elif command in [ "yes", "no", "abstain" ]:
+			nick.vote=command
+			return "Noted %s vote from %s" % (command, nick.nick)
+		else:
+			return "Usage: !vote (start|stop|yes|no|abstain)"
 
