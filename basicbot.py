@@ -23,7 +23,7 @@ class BasicBot(ircbot.IrcBot):
 	PublicCommands	= { }
 
 	def __init__(self, conffile="config"):
-		ircbot.IrcBot.__init__(self, conffile)
+		super(BasicBot, self).__init__(conffile)
 		self.tbf=tbf.TokenBucketFilter()
 		self.people={}
 

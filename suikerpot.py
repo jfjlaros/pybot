@@ -33,7 +33,7 @@ class SuikerPot(basicbot.BasicBot):
 				self.config["messages/startup"])
 
 	def OnPubMsg(self, connection, event):
-		basicbot.BasicBot.OnPubMsg(self, connection, event)
+		super(SuikerPot,self).OnPubMsg(connection, event)
 
 		msg=event.arguments()[0]
 		channel=event.target()
@@ -47,7 +47,7 @@ class SuikerPot(basicbot.BasicBot):
 
 
 	def OnPrivMsg(self, connection, event):
-		basicbot.BasicBot.OnPrivMsg(self, connection, event)
+		super(SuikerPot,self).OnPrivMsg(connection, event)
 
 		msg=event.arguments()[0]
 		args=msg[1:].split(None, 1)
@@ -59,7 +59,7 @@ class SuikerPot(basicbot.BasicBot):
 
 
 	def OnJoin(self, connection, event):
-		basicbot.BasicBot.OnJoin(self, connection, event)
+		super(SuikerPot,self).OnJoin(connection, event)
 
 		nick=irclib.nm_to_n(event.source())
 		if nick==self.connection.get_nickname():  # this is us!
