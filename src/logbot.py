@@ -15,6 +15,7 @@ class LogBot(sqlbot.SQLBot):
 
 		self.AddHandler("pubmsg", self._logbot_pubmsg)
 		self.AddHandler("ctcp", self._logbot_ctcp)
+		self.AddHandler("topic", self._logbot_topic)
 		self.logcmd=("INSERT INTO %s (url,type,nick,text) VALUES (%%s,%%s,%%s,%%s)" % 
 				self.config["SQL/table"])
 
@@ -47,3 +48,8 @@ class LogBot(sqlbot.SQLBot):
 		msg=event.arguments()[0]
 		self._logbot_log("PUBMSG", nick, msg)
 
+	def _logbot_topic(self, connection, event):
+		nick=irclib.nm_to_n(event.source())
+		msg=event.arguments()[0]
+		print "topic set to %s" % msg
+		self._logbot_log("TOPIC", nick, msg)
