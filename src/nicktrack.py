@@ -13,15 +13,15 @@ class Nick:
 
 
 
-class BasicBot(ircbot.IrcBot):
+class Nicktrack(ircbot.IrcBot):
 	"""A basic template for an irc bot.
 
 	This class is more advanced that the standard IrcBot and knows how
 	to delegate commands to methods and will log events.
 	"""
 
-	def __init__(self, conffile="config"):
-		super(BasicBot, self).__init__(conffile)
+	def __init__(self):
+		super(Nicktrack, self).__init__()
 		self.tbf=tbf.TokenBucketFilter()
 		self.people={}
 
