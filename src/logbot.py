@@ -51,5 +51,4 @@ class LogBot(sqlbot.SQLBot):
 	def _logbot_topic(self, connection, event):
 		nick=irclib.nm_to_n(event.source())
 		msg=event.arguments()[0]
-		print "topic set to %s" % msg
 		self._logbot_log("TOPIC", nick, msg)
