@@ -9,6 +9,9 @@ class VoteBot(commandbot.CommandBot):
 	
 
 	def _votebot_vote(self, nick, text):
+#		if not nick.ops:
+#			return "Only chanops are allowed to use !vote"
+#
 		params=text.strip().split()
 		if len(params)!=1:
 			return "Usage: !vote (start|stop|yes|no|abstain)"
@@ -32,7 +35,7 @@ class VoteBot(commandbot.CommandBot):
 				result="no"
 			else:
 				result="tie"
-			return ("vote result: %s. %d yes votes, %d no votes and %d abstains" %
+			return ("vote result: %s. %d yes votes, %d no votes and %d abstentions" %
 				(result, votes["yes"], votes["no"], votes["abstain"]))
 		elif command in [ "yes", "no", "abstain" ]:
 			nick.vote=command

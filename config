@@ -3,6 +3,7 @@ IRC {
 	server		"irc.eu.oftc.net";
 	port		6667;
 	nick		"thora";
+	name		"Wichert Akkerman";
 };
 
 SQL {

@@ -24,3 +24,23 @@ class SQLBot(ircbot.IrcBot):
 		except self.dbc.Error, e:
 			self.logger.warn("Database connection not working: %s" % e)
 			self.sqlconnect()
+	
+	def sqlexecute(self, sql, params=()):
+		self.sqlverify()
+		try:
+			self.dbc.execute(sql, params, "format")
+			self.dbc.commit()
+		except self.dbc.Error, e:
+			self.dbc.rollback()
+			raise
+
+	def sqlquery(self, sql, params=()):
+		self.sqlverify()
+		try:
+			res=self.dbc.query(sql, params, "format")
+			self.dbc.commit()
+			return res
+		except self.dbc.Error, e:
+			self.dbc.rollback()
+			raise
+

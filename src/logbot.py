@@ -32,6 +32,7 @@ class LogBot(sqlbot.SQLBot):
 			self.dbc.execute(self.logcmd, (url,type,nick,msg), "format")
 			self.dbc.commit()
 		except self.dbc.Error, e:
+			self.dbc.rollback()
 			self.logger.error("Failed to log message: %s" % e)
 
 
@@ -52,3 +53,66 @@ class LogBot(sqlbot.SQLBot):
 		nick=irclib.nm_to_n(event.source())
 		msg=event.arguments()[0]
 		self._logbot_log("TOPIC", nick, msg)
+
+
+	def CommandSeen(self, nick, text):
+		if not text:
+			return
+		scan=text.split(None, 2)[0].lower()
+
+		try:
+			res=self.sqlquery(
+				"SELECT nick, now()-time "
+				"FROM %s "
+				"WHERE NICK ~* %%s "
+				"ORDER BY time DESC LIMIT 1;" % self.config["SQL/table"],
+				(scan,))
+		except self.dbc.Error, e:
+			self.logger.error("!seen query failed: %s" % e)
+			return "SQL error"
+
+		if not res:
+			return "Never seen %s" % scan
+
+		(nick, delta)=tuple(res[0])
+		buf=[]
+		if delta.day:
+			buf.append("%d days" % delta.day)
+		if delta.hour:
+			buf.append("%d hours" % delta.hour)
+		if delta.minute:
+			buf.append("%d minutes" % delta.minute)
+		if not buf:
+			return "%s is active right now!" % nick
+		return "Last activity from %s seen %s ago" % \
+			(nick, ", ".join(buf))
+
+
+	def CommandUrlGrep(self, nick, text):
+		if not text:
+			return
+		scan=text.split(None, 2)[0].lower()
+
+		try:
+			res=self.sqlquery(
+					"SELECT time,nick,type,text "
+					"FROM %s "
+					"WHERE url AND text ~* %%s "
+					"ORDER BY time DESC LIMIT 1;" % self.config["SQL/table"],
+					(scan,))
+		except self.dbc.Error, e:
+			self.logger.error("!seen query failed: %s" % e)
+			return "SQL error"
+
+		if not res:
+			return "Nothing found"
+
+		(time,nick,t,text)=tuple(res[0])
+		if t=="TOPIC":
+			return "%s set topic to %s" % (nick, text)
+		elif t=="ACTION":
+			return "%s %s" % (nick, text)
+		else:
+			return "<%s> %s" % (nick, text)
+
+
