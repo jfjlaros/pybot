@@ -1,5 +1,5 @@
 IRC {
-	channel		"#@test";
+	channel		"#spi";
 	server		"irc.eu.oftc.net";
 	port		6667;
 	nick		"SuikerPot";
@@ -8,6 +8,6 @@ IRC {
 messages {
 	klant		"Een tevreden klant verliet het pand";
 	koffie		"zet een kopje koffie voor %s";
-	welcome		"Welkom op #koffie.";
+	welcome		"Welcome to the SPI board meeting. Please register your presence using /msg SuikerPot !present <your full name>";
 	startup		"SuikerPot 1.9 reporting for duty!";
 };
