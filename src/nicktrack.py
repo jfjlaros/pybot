@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
-import datetime, sys
-import irclib, ircbot, tbf
+import datetime
+import ircbot, tbf
 
 class Nick:
 	def __init__(self, nick, mask=None, voice=False, ops=False):
