@@ -1,0 +1,10 @@
+-- SQL table used by the url tracker
+
+CREATE TABLE channel (
+	id	SERIAL UNIQUE PRIMARY KEY NOT NULL,
+	time	TIMESTAMP DEFAULT now() NOT NULL,
+	type	VARCHAR(6) DEFAULT 'PUBMSG' NOT NULL,
+	url	BOOLEAN DEFAULT 'n' NOT NULL,
+	nick	VARCHAR(32) NOT NULL,
+	text	VARCHAR(255) NOT NULL);
+
