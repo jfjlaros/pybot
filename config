@@ -1,0 +1,13 @@
+IRC {
+	channel		"#@test";
+	server		"irc.eu.oftc.net";
+	port		6667;
+	nick		"SuikerPot";
+};
+
+messages {
+	klant		"Een tevreden klant verliet het pand";
+	koffie		"zet een kopje koffie voor %s";
+	welcome		"Welkom op #koffie.";
+	startup		"SuikerPot 1.9 reporting for duty!";
+};
