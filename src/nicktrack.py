@@ -20,19 +20,19 @@ class Nicktrack(ircbot.IrcBot):
 	to delegate commands to methods and will log events.
 	"""
 
-	def __init__(self):
-		super(Nicktrack, self).__init__()
+	def __init__(self, *args, **kwargs):
+		super(Nicktrack, self).__init__(*args, **kwargs)
 		self.tbf=tbf.TokenBucketFilter()
 		self.people={}
 
-		self.add_global_handler("namreply", self._nicktrack_namreply, -30)
-		self.add_global_handler("join", self._nicktrack_join, -30)
-		self.add_global_handler("part", self._nicktrack_part, -30)
-		self.add_global_handler("quit", self._nicktrack_quit, -30)
-		self.add_global_handler("privmsg", self._nicktrack_log, -30)
-		self.add_global_handler("pubmsg", self._nicktrack_log, -30)
-		self.add_global_handler("topic", self._nicktrack_log, -30)
-		self.add_global_handler("nick", self._nicktrack_nick, -30)
+		self.AddHandler("namreply", self._nicktrack_namreply, -30)
+		self.AddHandler("join", self._nicktrack_join, -30)
+		self.AddHandler("part", self._nicktrack_part, -30)
+		self.AddHandler("quit", self._nicktrack_quit, -30)
+		self.AddHandler("privmsg", self._nicktrack_log, -30)
+		self.AddHandler("pubmsg", self._nicktrack_log, -30)
+		self.AddHandler("topic", self._nicktrack_log, -30)
+		self.AddHandler("nick", self._nicktrack_nick, -30)
 
 
 	def CheckLimit(self, weight=1):

@@ -5,7 +5,7 @@ import ircbot
 
 class SQLBot(ircbot.IrcBot):
 	def __init__(self, *args, **kwargs):
-		super(SQLbot, self).__init__(*args, **kwargs)
+		super(SQLBot, self).__init__(*args, **kwargs)
 
 		self.sqlserver=dhm.sqlwrap.GetServer(self.config["SQL/driver"],
 				host=cfg["SQL/server"],

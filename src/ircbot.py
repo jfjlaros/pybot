@@ -1,7 +1,7 @@
 # ircbot.py
 
 import logging
-from dhm import config, nestdict
+import dhm.config, dhm.nestdict
 import irclib
 
 class IrcBot(object):
@@ -26,7 +26,8 @@ class IrcBot(object):
 		@param conffile: name of configuration file
 		@type  conffile: string
 		"""
-		self.config=nestdict.NestedDict(config.Parse(kwargs["config"]))
+		self.config=dhm.nestdict.NestedDict(
+				dhm.config.Parse(kwargs["config"]))
 		self.logger=logging.getLogger("ircbot")
 
 		self.irc=irclib.IRC()
@@ -48,6 +49,10 @@ class IrcBot(object):
 		for i in filter(lambda x: x.startswith("On"), dir(self)):
 			self.connection.add_global_handler(i[2:].lower(),
 				getattr(self, i))
+
+
+	def AddHandler(self, event, func, prio=0):
+		self.connection.add_global_handler(event, func, prio)
 
 
 	def devoice(self,nick):
