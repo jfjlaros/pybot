@@ -6,4 +6,7 @@ __docformat__   = "epytext en"
 __author__      = "Wichert Akkerman <wichert@wiggy.net>"
 __copyright__   = "Copyright 2003,2004 Wichert Akkerman"
 
-__all__		= [ "ircbot", "irclib", "logbot", "nicktrack", "sqlbot", "tbf" ]
+__all__		= [
+			"commandbot", "ircbot", "irclib", "logbot",
+			"nicktrack", "sqlbot", "tbf"
+		]

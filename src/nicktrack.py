@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import datetime
-import ircbot, irclib, tbf
+import ircbot, irclib
 
 class Nick:
 	def __init__(self, nick, mask=None, voice=False, ops=False):
@@ -22,7 +22,6 @@ class Nicktrack(ircbot.IrcBot):
 
 	def __init__(self, *args, **kwargs):
 		super(Nicktrack, self).__init__(*args, **kwargs)
-		self.tbf=tbf.TokenBucketFilter()
 		self.people={}
 
 		self.AddHandler("namreply", self._nicktrack_namreply, -30)
@@ -34,10 +33,6 @@ class Nicktrack(ircbot.IrcBot):
 		self.AddHandler("topic", self._nicktrack_log, -30)
 		self.AddHandler("nick", self._nicktrack_nick, -30)
 
-
-	def CheckLimit(self, weight=1):
-		return self.tbf.account(weight)
-	
 
 	def RegisterNick(self, event):
 		nick=irclib.nm_to_n(event.source())
@@ -128,7 +123,7 @@ class Nicktrack(ircbot.IrcBot):
 		@param connection IRC connection instance
 		@param event      IRC event causing this method invocation
 		"""
-		content = event.arguments()
+		content=event.arguments()
 		self.logger.info("talked: %s : %s" % 
 			(irclib.nm_to_n(event.source()), content[0]))
 		self.RegisterNick(event)
