@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys
+import datetime, sys
 import irclib, ircbot, tbf
 
 class Nick:
@@ -39,6 +39,7 @@ class BasicBot(ircbot.IrcBot):
 		elif not hasattr(self.people[nick], "mask"):
 			self.people[nick].mask=event.source()
 
+		self.people[nick].seen=datetime.datetime.now()
 		return self.people[nick]
 
 
@@ -212,9 +213,9 @@ class BasicBot(ircbot.IrcBot):
 		@param connection IRC connection instance
 		@param event      IRC event causing this method invocation
 		"""
-		self.logger.info("%s changed nick to %s" %
-			(irclib.nm_to_n(event.source()), event.target()))
 		nick=self.RegisterNick(event)
+		self.logger.info("%s changed nick to %s" %
+			(nick.nick, event.target()))
 		self.people[event.target()]=self.people[nick.nick]
 		del self.people[nick.nick]
 
