@@ -1,4 +1,4 @@
-# urlbot.py
+# logbot.py
 
 import re
 import irclib, sqlbot
@@ -13,25 +13,37 @@ class LogBot(sqlbot.SQLBot):
 	def __init__(self, *args, **kwargs):
 		super(LogBot, self).__init__(*args, **kwargs)
 
-		self.AddHandler("pubmsg", self._urlbot_pubmsg)
-		self.logcmd=("INSERT INTO %s (url,nick,text) VALUES (%%s,%%s,%%s)" % 
+		self.AddHandler("pubmsg", self._logbot_pubmsg)
+		self.AddHandler("ctcp", self._logbot_ctcp)
+		self.logcmd=("INSERT INTO %s (url,type,nick,text) VALUES (%%s,%%s,%%s,%%s)" % 
 				self.config["SQL/table"])
 
 
 	def hasurl(self, text):
-		return self.urlmatcher.match(text)!=None
+		return self.urlmatcher.search(text)!=None
 
 
-	def _urlbot_pubmsg(self, connection, event):
-		nick=irclib.nm_to_n(event.source())
-		msg=event.arguments()[0]
-
+	def _logbot_log(self, type, nick, msg):
 		try:
 			self.sqlverify()
 			url=self.hasurl(msg)
 
-			self.dbc.execute(self.logcmd, (url,nick,msg), "format")
+			self.dbc.execute(self.logcmd, (url,type,nick,msg), "format")
 			self.dbc.commit()
 		except self.dbc.Error, e:
 			self.logger.error("Failed to log message: %s" % e)
+
+
+	def _logbot_ctcp(self, connection, event):
+		if not event.arguments()[0]=="ACTION":
+			return
+		nick=irclib.nm_to_n(event.source())
+		msg=event.arguments()[1]
+		self._logbot_log("ACTION", nick, msg)
+
+
+	def _logbot_pubmsg(self, connection, event):
+		nick=irclib.nm_to_n(event.source())
+		msg=event.arguments()[0]
+		self._logbot_log("PUBMSG", nick, msg)
 
