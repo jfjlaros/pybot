@@ -1,5 +1,5 @@
 IRC {
-	channel		"#spi";
+	channel		"#debian-devel";
 	server		"irc.eu.oftc.net";
 	port		6667;
 	nick		"SuikerPot";
