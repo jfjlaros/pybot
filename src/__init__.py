@@ -8,5 +8,5 @@ __copyright__   = "Copyright 2003,2004 Wichert Akkerman"
 
 __all__		= [
 			"commandbot", "ircbot", "irclib", "logbot",
-			"nicktrack", "sqlbot", "tbf"
+			"nicktrack", "sqlbot", "tbf", "votebot"
 		]
