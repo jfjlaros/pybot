@@ -20,13 +20,13 @@ class IrcBot(object):
 	@ivar     logger: logging object
 	"""
 
-	def __init__(self, conffile="config"):
+	def __init__(self, *args, **kwargs):
 		"""IrcBot constructor.
 
 		@param conffile: name of configuration file
 		@type  conffile: string
 		"""
-		self.config=nestdict.NestedDict(config.Parse(conffile))
+		self.config=nestdict.NestedDict(config.Parse(kwargs["config"]))
 		self.logger=logging.getLogger("ircbot")
 
 		self.irc=irclib.IRC()

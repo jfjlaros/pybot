@@ -1,9 +1,9 @@
 # sqlbot.py
 
 import dhm.sqlwrap
-import configbot
+import ircbot
 
-class SQLBot(configbot.ConfigBot):
+class SQLBot(ircbot.IrcBot):
 	def __init__(self, *args, **kwargs):
 		super(SQLbot, self).__init__(*args, **kwargs)
 
