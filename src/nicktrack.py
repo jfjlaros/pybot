@@ -59,7 +59,6 @@ class Nicktrack(ircbot.IrcBot):
 		@param connection IRC connection instance
 		@param event      IRC event causing this method invocation
 		"""
-		print "namreply arguments: %s" % str(event.arguments())
 		for nick in event.arguments()[2].split():
 			if nick[0]=='@':
 				self.people[nick[1:]]=Nick(nick[1:], ops=True)
