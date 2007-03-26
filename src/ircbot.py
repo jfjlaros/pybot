@@ -37,7 +37,7 @@ class IrcBot(object):
 				self.config["IRC/server"])
 		self.connection=self.server.connect(self.config["IRC/server"],
 			self.config["IRC/port"], self.config["IRC/nick"],
-			ircname=self.config["IRC/name"])
+			username=self.config["IRC/name"])
 
 		self.logger.info("Trying to join channel " + 
 				self.config["IRC/channel"])

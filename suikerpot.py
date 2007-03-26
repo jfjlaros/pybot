@@ -1,125 +1,252 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
-import re
-import irclib, basicbot
+import datetime, random
+import mx.DateTime
+import pybot.logbot, pybot.commandbot, pybot.votebot, pybot.irclib
 
-def IsFriend(nick):
-	if not getattr(nick, "mask", None):
+class Event:
+	pass
+
+
+
+def GetEventsForDate(dbc, cfg, date):
+	res=dbc.query("SELECT DISTINCT id FROM %s WHERE date=%%s" %
+			cfg["Paradiso/table"], (date,), "format")
+	ids=map(lambda x: x[0], res)
+	events=[]
+
+	for id in ids:
+		res=dbc.query("SELECT date,attribute,value FROM %s WHERE id=%%s" % cfg["Paradiso/table"],
+			(id,), "format")
+		if not res:
+			continue
+
+		event=Event()
+		event.id=id
+		event.date=res[0][0]
+		for (date,attr,value) in res:
+			setattr(event, attr, value)
+
+		events.append(event)
+
+	return events
+
+
+class Bolt(pybot.logbot.LogBot, pybot.votebot.VoteBot, ):
+	def __init__(self, *args, **kwargs):
+		super(Bolt, self).__init__(*args, **kwargs)
+
+		self.zenActive=False
+
+		self.AddHandler("pubmsg", self._no_colours_please)
+		self.commands["seen"]=self.CommandSeen
+		self.commands["koffie"]=self.CommandKoffie
+		self.commands["thee"]=self.CommandThee
+		self.commands["linkurl"]=self.CommandUrlLog
+		self.commands["urlog"]=self.CommandUrlLog
+		self.commands["urlgrep"]=self.CommandUrlGrep
+		self.commands["zen"]=self.CommandZen
+		self.commands["do"]=self.CommandDo
+		self.commands["say"]=self.CommandSay
+
+		self.commands["klant"]=self.CommandKlant
+		self.commands["customer"]=self.CommandCustomer
+		self.commands["cliente"]=self.CommandCliente
+		self.commands["kunde"]=self.CommandKunde
+		self.commands["kund"]=self.CommandKund
+		self.commands["asiakas"]=self.CommandAsiakas
+		self.commands["client"]=self.CommandClient
+
+		self.commands["paradiso"]=self.CommandParadiso
+
+		self.AddHandler("join", self._voice_join)
+
+
+	def _no_colours_please(self, connection, event):
+		nick=pybot.irclib.nm_to_n(event.source())
+		msg=event.arguments()[0]
+		evil=[c for c in msg if ord(c)<=27]
+		if len(evil):
+			self.devoice(nick)
+			self.server.ctcp("ACTION", self.config["IRC/channel"],
+					"wordt bijna doof!")
+
+
+	def GetUserLevel(self, nickmask):
+		self.sqlverify()
+		try:
+			res=self.dbc.query("SELECT mask, level FROM ircopers WHERE channel=%s",
+				(self.config["IRC/channel"],), "format")
+			for (mask,level) in res:
+				if pybot.irclib.mask_matches(nickmask, str(mask)):
+					return level
+		except self.dbc.Error, e:
+			print ".. database error! %s" % str(e)
+			self.logger.error("GetUserLevel failed: %s" % e)
+
 		return 0
-
-	try:
-		for line in open('friends').readlines():
-			words=re.split("\s",line.rstrip())
-			if len(words)==0:
-				continue
-			
-			if re.search("^%s$" % words[0], nick.mask):
-				if len(words)==2:
-					return int(words[1])
-				return 1
-
-	except IOError,x:
-		print "Unable to open 'friends' file: ",x
 	
-	return 0
+
+	def CommandUrlLog(self, nick, text):
+		return "http://www.wiggy.net/koffie/linkurl"
 
 
-
-class SuikerPot(basicbot.BasicBot):
-	PublicCommands	= { }
-
-	def OnEndOfNames(self, connection, event):
-		self.server.privmsg(event.arguments()[0],
-				self.config["messages/startup"])
-
-	def OnPubMsg(self, connection, event):
-		super(SuikerPot,self).OnPubMsg(connection, event)
-
-		msg=event.arguments()[0]
-		channel=event.target()
-
-		args=msg[1:].split(None, 1)
-		(cmd,args)=(args[0], args[1:])
-		if args:
-			args=args[0]
-		func="PubCmd"+cmd.capitalize()
-		if msg[0]=='!' and hasattr(self, func):
-			nick=self.people[irclib.nm_to_n(event.source())]
-			getattr(self, func)(channel, nick, args)
+	def CommandKlant(self, nick, text):
+		return "En weer verlaat een tevreden klant het pand"
 
 
-	def OnPrivMsg(self, connection, event):
-		super(SuikerPot,self).OnPrivMsg(connection, event)
-
-		msg=event.arguments()[0]
-		args=msg[1:].split(None, 1)
-		(cmd,args)=(args[0], args[1:])
-		if args:
-			args=args[0]
-		func="PrivCmd"+cmd.capitalize()
-		if msg[0]=='!' and hasattr(self, func):
-			nick=self.people[irclib.nm_to_n(event.source())]
-			getattr(self, func)(nick, args)
+	def CommandCustomer(self, nick, text):
+		return "And yet again a satisfied customer exits the building"
 
 
-	def OnJoin(self, connection, event):
-		super(SuikerPot,self).OnJoin(connection, event)
+	def CommandCliente(self, nick, text):
+		# Spanish version
+		return "Y un otro cliente satsifecho sale del edificio"
 
-		nick=irclib.nm_to_n(event.source())
-		if nick==self.connection.get_nickname():  # this is us!
-			self.logger.info("We finished joining %s ourselves" 
-					% event.target())
-			return 
 
-		if IsFriend(event.source()):
-			self.logger.info("%s is a friend, giving ops" % nick)
-			self.op(nick)
+	def CommandAsiakas(self, nick, text):
+		# Finnish version by liw
+		return u"Ja jälleen yksi tyytyväinen asiakas poistuu rakennuksesta".encode("raw_unicode_escape")
+
+	def CommandKunde(self, nick, text):
+		# German version by Ganneff
+		return u"Und wieder verlässt ein zufriedener Kunde das Gebäude".encode("raw_unicode_escape")
+
+	def CommandKund(self, nick, text):
+		# Swedish version by maswan
+		return u"Och ännu en nöjd kund lämnar byggnad".encode("raw_unicode_escape")
+
+	def CommandClient(self, nick, text):
+		# French version by JohnR
+		return u"Mais encore un client satisfait sort le bâtiment".encode("raw_unicode_escape")
+
+	def CommandThee(self, nick, text):
+		if not self.CheckLimit():
+			return
+
+		product=random.choice(["earl grey", "mango", "groene",
+				"kaneel", "bosvruchten", "citroen"])
+		msg="schenkt %s een lekker kopje %s thee in" % (nick.nick, product)
+		self.server.ctcp("ACTION", self.config["IRC/channel"], msg)
+
+
+	def CommandKoffie(self, nick, text):
+		if not self.CheckLimit():
+			return
+
+		chance=random.randint(0, 20)
+		if chance<=1:
+			product="decafe"
+		elif chance<5:
+			product=random.choice([ "espresso", "cappuccino",
+					"irish coffee", "koffie verkeerd",
+					"wiener melange"])
 		else:
-			self.logger.info("%s is not a friend, giving voice and sending welcome message" % nick)
-			self.voice(nick)
-			if self.CheckLimit():
-				self.connection.notice(nick.nick, self.config["messages/welcome"])
-	
+			product="koffie"
 
-	def PubCmdKoffie(self, channel, nick, args):
-		if self.CheckLimit():
-			self.server.ctcp("ACTION", channel,
-					self.config["messages/koffie"] % nick.nick)
-	
-
-	def PubCmdKlant(self, channel, nick, args):
-		if self.CheckLimit():
-			self.server.privmsg(channel,
-					self.config["messages/klant"])
+		msg="schenkt %s een lekker kopje %s in" % (nick.nick, product)
+		self.server.ctcp("ACTION", self.config["IRC/channel"], msg)
 
 
-	def PrivCmdSay(self, nick, args):
-		if IsFriend(nick):
-			try:
-				(channel,msg)=args.split(None, 1)
-				self.server.privmsg(channel, msg)
-			except ValueError:
-				self.server.privmsg(nick.nick,
-						"Not enough parameters")
+	def CommandParadiso(self, nick, text):
+		today=mx.DateTime.now()-mx.DateTime.TimeDelta(hours=6)
+		today=mx.DateTime.DateTime(today.year, today.month, today.day)
+		events=GetEventsForDate(self.dbc, self.config, today)
 
-	def PrivCmdDo(self, nick, args):
-		if IsFriend(nick):
-			try:
-				(channel,msg)=args.split(None, 1)
-				self.server.ctcp("ACTION", channel, msg)
-			except ValueError:
-				self.server.privmsg(nick.nick,
-						"Not enough parameters")
+		response="Playing in paradiso today: " + \
+			", ".join(map(lambda x: x.info_naam, events))
+		return response.encode("ascii", "ignore")
 
-	def PrivCmdOp(self, nick, args):
-		if IsFriend(nick)>1:
-			self.server.privmsg(nick.nick, "You will be opped")
-			self.op(nick.nick)
+
+	def CommandDo(self, nick, text):
+		if not self.CheckLimit():
+			return
+
+		try:
+			level=self.GetUserLevel(nick.mask)
+		except AttributeError:
+			return
+
+		if level<100:
+			return
+
+		self.server.ctcp("ACTION", self.config["IRC/channel"], text)
+
+
+	def CommandSay(self, nick, text):
+		if not self.CheckLimit():
+			return
+
+		try:
+			level=self.GetUserLevel(nick.mask)
+		except AttributeError:
+			return
+
+		if level<100:
+			return
+
+		self.connection.privmsg(self.config["IRC/channel"], text)
+
+
+	def CommandZen(self, nick, text):
+		if self.zenActive:
+			return
+
+		if not self.CheckLimit():
+			return
+
+		scan=text.split(None, 1)
+		try:
+			level=self.GetUserLevel(nick.mask)
+		except AttributeError:
+			print "attribute error, nick has no mask"
+			print "nick is %s" % `nick`
+			print "nick is %s" % nick.__dict__
+			level=0
+
+		print "userlevel: %s" % level
+
+		chance=10 + level/2
+		print "change limit: %d" % chance
+		if random.randint(0, 100)>=chance:
+			print "random not hit.. skipping"
+			return
+
+		if level<0:
+			return "No zen for you. Come back, next year."
+		elif level>0 and len(scan)>1 and scan[0].lower()=="voor":
+			target=scan[1]
 		else:
-			self.server.privmsg(nick.nick, "Sorry, I do not trust you.")
+			target=nick.nick
 
+		self.zenActive=True
+		self.server.ctcp("ACTION", self.config["IRC/channel"], 
+				"mediteert voor %s" % target)
+		self.irc.execute_delayed(random.randint(5, 30)*60,
+				self.ZenFinished, (target,))
+
+
+	def ZenFinished(self, target):
+		msg="heeft volledige verlichting bereikt voor %s" % target
+		self.server.ctcp("ACTION", self.config["IRC/channel"], msg)
+		self.zenActive=False
+
+
+	def _voice_join(self, connection, event):
+		nick=pybot.irclib.nm_to_n(event.source())
+#		if nick==self.connection.get_nickname():  # this is us!
+#			self.logger.info("We finished joining %s ourselves" 
+#					% event.target())
+#			return 
+
+		if self.CheckLimit(weight=2):
+			if self.GetUserLevel(event.source())>=100:
+				self.op(nick)
+			else:
+				self.voice(nick)
+				self.connection.notice(nick, self.config["messages/welcome"])
 
 if __name__ == "__main__":
-	bot=SuikerPot()
+	bot=Bolt(config="suikerpot.config")
 	bot.MainLoop()
-

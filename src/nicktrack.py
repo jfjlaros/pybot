@@ -35,6 +35,7 @@ class Nicktrack(ircbot.IrcBot):
 
 
 	def RegisterNick(self, event):
+		print event.source()
 		nick=irclib.nm_to_n(event.source()).lower()
 		if not nick in self.people:
 			self.people[nick]=Nick(nick, event.source())
