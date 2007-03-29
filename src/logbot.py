@@ -72,19 +72,19 @@ class LogBot(sqlbot.SQLBot):
 			return "SQL error"
 
 		if not res:
-			return "Never seen %s" % scan
+			return "Nooit gehoord van %s" % scan
 
 		(nick, delta)=tuple(res[0])
 		buf=[]
 		if delta.day:
-			buf.append("%d days" % delta.day)
+			buf.append("%d dagen" % delta.day)
 		if delta.hour:
-			buf.append("%d hours" % delta.hour)
+			buf.append("%d uur" % delta.hour)
 		if delta.minute:
-			buf.append("%d minutes" % delta.minute)
+			buf.append("%d minuten" % delta.minute)
 		if not buf:
-			return "%s is active right now!" % nick
-		return "Last activity from %s seen %s ago" % \
+			return "%s is nu actief!" % nick
+		return "Laatste activiteit van %s was %s geleden" % \
 			(nick, ", ".join(buf))
 
 
@@ -105,11 +105,11 @@ class LogBot(sqlbot.SQLBot):
 			return "SQL error"
 
 		if not res:
-			return "Nothing found"
+			return "Niets gevonden"
 
 		(time,nick,t,text)=tuple(res[0])
 		if t=="TOPIC":
-			return "%s set topic to %s" % (nick, text)
+			return "%s zette topic naar %s" % (nick, text)
 		elif t=="ACTION":
 			return "%s %s" % (nick, text)
 		else:

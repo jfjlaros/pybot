@@ -8,8 +8,6 @@ import pybot.logbot, pybot.commandbot, pybot.votebot, pybot.irclib
 class Event:
 	pass
 
-
-
 def GetEventsForDate(dbc, cfg, date):
 	res=dbc.query("SELECT DISTINCT id FROM %s WHERE date=%%s" %
 			cfg["Paradiso/table"], (date,), "format")
@@ -58,7 +56,7 @@ class Bolt(pybot.logbot.LogBot, pybot.votebot.VoteBot, ):
 		self.commands["asiakas"]=self.CommandAsiakas
 		self.commands["client"]=self.CommandClient
 
-		self.commands["paradiso"]=self.CommandParadiso
+#		self.commands["paradiso"]=self.CommandParadiso
 
 		self.AddHandler("join", self._voice_join)
 
@@ -89,7 +87,7 @@ class Bolt(pybot.logbot.LogBot, pybot.votebot.VoteBot, ):
 	
 
 	def CommandUrlLog(self, nick, text):
-		return "http://www.wiggy.net/koffie/linkurl"
+		return "http://lithium.liacs.nl/koffie/linkurl"
 
 
 	def CommandKlant(self, nick, text):
@@ -125,9 +123,9 @@ class Bolt(pybot.logbot.LogBot, pybot.votebot.VoteBot, ):
 		if not self.CheckLimit():
 			return
 
-		product=random.choice(["earl grey", "mango", "groene",
+		product=random.choice(["earl grey ", "mango", "groene ",
 				"kaneel", "bosvruchten", "citroen"])
-		msg="schenkt %s een lekker kopje %s thee in" % (nick.nick, product)
+		msg="schenkt %s een lekker kopje %sthee in" % (nick.nick, product)
 		self.server.ctcp("ACTION", self.config["IRC/channel"], msg)
 
 
@@ -214,7 +212,7 @@ class Bolt(pybot.logbot.LogBot, pybot.votebot.VoteBot, ):
 			return
 
 		if level<0:
-			return "No zen for you. Come back, next year."
+			return "Geen zen voor jou. Kom volgend jaar maar terug."
 		elif level>0 and len(scan)>1 and scan[0].lower()=="voor":
 			target=scan[1]
 		else:

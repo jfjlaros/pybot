@@ -18,7 +18,9 @@ class CommandBot(nicktrack.Nicktrack):
 
 	def __RunCommand(self, event):
 		content=event.arguments()[0]
-		data=content.lstrip().split(None, 2)
+		#data=content.lstrip().split(None, 2)
+		data=content.lstrip().split(None, 1) 
+
 		if len(data)==0:
 			return None
 		if len(data)==1:
