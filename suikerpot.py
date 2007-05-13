@@ -3,7 +3,7 @@
 
 import datetime, random
 import mx.DateTime
-import pybot.logbot, pybot.commandbot, pybot.votebot, pybot.irclib
+import pybot.logbot, pybot.commandbot, pybot.votebot, pybot.irclib, pybot.eddie
 
 class Event:
 	pass
@@ -31,7 +31,7 @@ def GetEventsForDate(dbc, cfg, date):
 	return events
 
 
-class Bolt(pybot.logbot.LogBot, pybot.votebot.VoteBot, ):
+class Bolt(pybot.logbot.LogBot, pybot.votebot.VoteBot, pybot.eddie.Eddie):
 	def __init__(self, *args, **kwargs):
 		super(Bolt, self).__init__(*args, **kwargs)
 
