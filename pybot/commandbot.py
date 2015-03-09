@@ -27,7 +27,8 @@ class CommandBot(nicktrack.Nicktrack):
 			data.append("")
 		if data[0][0]!='!':
 			return None
-		(command,data)=(data[0][1:], data[1])
+		#Timo: added .lower() to allow !KoFFie etc
+		(command,data)=(data[0][1:].lower(), data[1])
 		if command not in self.commands:
 			return None
 

@@ -106,6 +106,7 @@ class IrcBot(object):
 			self.irc.process_forever(1)
 		except KeyboardInterrupt:
 			self.logger.warn("Received interrupt, disconnecting from irc")
-			self.irc.disconnect_all("^C received")
+			#self.irc.disconnect_all("^C received")
+			self.irc.disconnect_all("even de suiker bijvullen")
 		
 			self.logger.info("Finished disconnecting, shutting down")

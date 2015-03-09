@@ -1,6 +1,6 @@
 # sqlbot.py
 
-import dhm.sqlwrap
+import dhm.sql.wrap
 import ircbot
 
 class SQLBot(ircbot.IrcBot):
@@ -11,10 +11,10 @@ class SQLBot(ircbot.IrcBot):
 	
 	def sqlconnect(self):
 		self.logger.info("(Re)connecting to SQL server")
-		self.sqlserver=dhm.sqlwrap.GetServer(self.config["SQL/driver"],
-				host=self.config["SQL/server"],
-				user=self.config["SQL/username"],
-				password=self.config["SQL/password"])
+		self.sqlserver=dhm.sql.wrap.GetServer(self.config["SQL/driver"])
+				#host=self.config["SQL/server"],
+				#user=self.config["SQL/username"],
+				#password=self.config["SQL/password"])
 		self.dbc=self.sqlserver[self.config["SQL/database"]]
 	
 

@@ -87,7 +87,7 @@ class Bolt(pybot.logbot.LogBot, pybot.votebot.VoteBot, pybot.eddie.Eddie):
 	
 
 	def CommandUrlLog(self, nick, text):
-		return "http://lithium.liacs.nl/koffie/linkurl"
+		return "http://irc.fixedpoint.nl/koffie/linkurl"
 
 
 	def CommandKlant(self, nick, text):
@@ -123,7 +123,7 @@ class Bolt(pybot.logbot.LogBot, pybot.votebot.VoteBot, pybot.eddie.Eddie):
 		if not self.CheckLimit():
 			return
 
-		product=random.choice(["earl grey ", "mango", "groene ",
+		product=random.choice(["Earl Grey", "mango", "groene ",
 				"kaneel", "bosvruchten", "citroen"])
 		msg="schenkt %s een lekker kopje %sthee in" % (nick.nick, product)
 		self.server.ctcp("ACTION", self.config["IRC/channel"], msg)
@@ -226,7 +226,18 @@ class Bolt(pybot.logbot.LogBot, pybot.votebot.VoteBot, pybot.eddie.Eddie):
 
 
 	def ZenFinished(self, target):
-		msg="heeft volledige verlichting bereikt voor %s" % target
+
+		licht="verlichting"
+		today=mx.DateTime.now()
+		if today.month==12 and today.day>5:
+			licht="kerstverlichting"
+
+		easterstart=mx.DateTime.Feasts.EasterFriday(today.year)
+		easterend=mx.DateTime.Feasts.EasterSunday(today.year)+2
+		if easterstart<=today and today<=easterend:
+			licht="paasverlichting"
+
+		msg="heeft volledige %s bereikt voor %s" % (licht, target)
 		self.server.ctcp("ACTION", self.config["IRC/channel"], msg)
 		self.zenActive=False
 
