@@ -4,41 +4,41 @@ import commandbot
 import re, urllib
 
 class Eddie(commandbot.CommandBot):
-	def __init__(self, *args, **kwargs):
-		super(Eddie, self).__init__(*args, **kwargs)
-		self.commands["reload"]=self._eddie_reload
-		self._eddie_load()
+    def __init__(self, *args, **kwargs):
+        super(Eddie, self).__init__(*args, **kwargs)
+        self.commands["reload"]=self._eddie_reload
+        self._eddie_load()
 
-	def _eddie_load(self):
-		#TODO: delete eddie_* first
-   		for f in dir(getattr(__import__("pybot.eddie"),"eddie")):
-			if f.startswith("eddie_"):
-				print "loading eddie: %s" % f
-				self.commands[f[6:]]=globals()[f]
+    def _eddie_load(self):
+        #TODO: delete eddie_* first
+           for f in dir(getattr(__import__("pybot.eddie"),"eddie")):
+            if f.startswith("eddie_"):
+                print "loading eddie: %s" % f
+                self.commands[f[6:]]=globals()[f]
 
-	def _eddie_reload(self, nick, text):
-		#TODO: check levels, etc
-   		eddiepy = getattr(__import__("pybot.eddie"), "eddie")
-		reload(eddiepy)
-		self._eddie_load()
+    def _eddie_reload(self, nick, text):
+        #TODO: check levels, etc
+           eddiepy = getattr(__import__("pybot.eddie"), "eddie")
+        reload(eddiepy)
+        self._eddie_load()
 
 def eddie_zut(nick, text):
-	return "zut alors, %s!" % nick.nick
+    return "zut alors, %s!" % nick.nick
 
 def eddie_bier(nick, text):
-	return "lekker!"
+    return "lekker!"
 
 def eddie_weekend(nick, text):
-	return "nu al?"
+    return "nu al?"
 
 def eddie_wekeend(nick, text):
-	return "KWAK!"
+    return "KWAK!"
 
 def eddie_weer(nick, text):
-	return "Het weer: %s Graden / %s" % wunderground()[0:2]
+    return "Het weer: %s Graden / %s" % wunderground()[0:2]
 
 def eddie_maan(nick, text):
-	fasemap={"New Moon":"nieuwe maan", 
+    fasemap={"New Moon":"nieuwe maan", 
                  "Waxing Crescent":"wassende maan",
                  "First Quarter":"halve maan (eerste kwartier)",
                  "Waxing Gibbous":"wassende halve maan",
@@ -47,34 +47,34 @@ def eddie_maan(nick, text):
                  "Last Quarter":"halve maan (laatste kwartier)",
                  "Waning Crescent":"afnemende maan"}
 
-	maan=wunderground()[2]
-	try:
-		(fase, illu)=maan.split(', ')
-	except:
-		return "Het is hier veel te donker om de maan te zien."
+    maan=wunderground()[2]
+    try:
+        (fase, illu)=maan.split(', ')
+    except:
+        return "Het is hier veel te donker om de maan te zien."
         fase=fasemap[fase]
-	illu=illu[0:illu.find('%')]
-	return "Het is %s, %s%% is verlicht." % (fase, illu)
+    illu=illu[0:illu.find('%')]
+    return "Het is %s, %s%% is verlicht." % (fase, illu)
 
 
 def wunderground():
-	deg="?";
-	wea="Geen weer";
-	moon="Spontane maansverduistering";
-	wund="http://dutch.wunderground.com/global/stations/06240.html"
-	u=urllib.urlopen(wund)
-	lines=u.read().splitlines()
-	u.close()
-	for l in range(len(lines)): 
-		if '<td class="full" id="message2">' in lines[l]:
-			deg=lines[l+4]
-			deg=deg[deg.find('<b>')+3:deg.find('</b>')]
-			wea=lines[l+6]
-			wea=wea[wea.find('>')+1:wea.find('</div>')]
-		if '<table class="boxG" id="full"' in lines[l]:
-			moon=lines[l+3]
-			moon=moon[moon.find('>')+1:moon.find('</h4>')]
-	return (deg, wea, moon)
+    deg="?";
+    wea="Geen weer";
+    moon="Spontane maansverduistering";
+    wund="http://dutch.wunderground.com/global/stations/06240.html"
+    u=urllib.urlopen(wund)
+    lines=u.read().splitlines()
+    u.close()
+    for l in range(len(lines)): 
+        if '<td class="full" id="message2">' in lines[l]:
+            deg=lines[l+4]
+            deg=deg[deg.find('<b>')+3:deg.find('</b>')]
+            wea=lines[l+6]
+            wea=wea[wea.find('>')+1:wea.find('</div>')]
+        if '<table class="boxG" id="full"' in lines[l]:
+            moon=lines[l+3]
+            moon=moon[moon.find('>')+1:moon.find('</h4>')]
+    return (deg, wea, moon)
 
 def language(phrase): 
    languages = {

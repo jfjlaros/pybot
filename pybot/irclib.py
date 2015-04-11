@@ -227,10 +227,10 @@ class IRC:
         """
         while 1:
             self.process_once(timeout)
-	    if time.time()-self.connections[0].last_ping > 666:
-            	self.connections[0].disconnect("Not pinged")
-	    	print "Ping timeout"
-            	return
+        if time.time()-self.connections[0].last_ping > 666:
+            self.connections[0].disconnect("Not pinged")
+            print "Ping timeout"
+            return
 
 
     def disconnect_all(self, message=""):
@@ -415,7 +415,7 @@ class ServerConnection(Connection):
         if self.connected:
             self.disconnect("Changing servers")
 
-	self.last_ping = time.time()
+        self.last_ping = time.time()
         self.previous_buffer = ""
         self.handlers = {}
         self.real_server_name = ""
@@ -490,7 +490,7 @@ class ServerConnection(Connection):
             new_data = self.socket.recv(2**14)
         except socket.error, x:
             # The server hung up.
-	    print "socket.error"
+            print "socket.error"
             self.disconnect("Connection reset by peer")
             return
         if not new_data:
@@ -498,7 +498,7 @@ class ServerConnection(Connection):
             self.disconnect("Connection reset by peer")
             return
 
-	self.last_ping = time.time()
+        self.last_ping = time.time()
         lines = _linesep_regexp.split(self.previous_buffer + new_data)
 
         # Save the last, unfinished line.
@@ -793,7 +793,7 @@ class ServerConnection(Connection):
             self.socket.send(string + "\r\n")
             if DEBUG:
                 print "TO SERVER:", string
-	    self.last_ping = time.time()
+            self.last_ping = time.time()
         except socket.error, x:
             # Ouch!
             self.disconnect("Connection reset by peer.")
