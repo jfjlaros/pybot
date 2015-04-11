@@ -260,7 +260,7 @@ def main():
     """
     Main entry point.
     """
-    bot=Bolt(config="suikerpot.config")
+    bot=Bolt(config=".pybot.conf")
     bot.MainLoop()
 
 
