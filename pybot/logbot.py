@@ -76,12 +76,12 @@ class LogBot(sqlbot.SQLBot):
 
         (nick, delta)=tuple(res[0])
         buf=[]
-        if delta.day:
-            buf.append("%d dagen" % delta.day)
-        if delta.hour:
-            buf.append("%d uur" % delta.hour)
-        if delta.minute:
-            buf.append("%d minuten" % delta.minute)
+        if delta.days:
+            buf.append("%d dagen" % delta.days)
+        if delta.seconds // 3600:
+            buf.append("%d uur" % (delta.seconds // 3600))
+        if (delta.seconds // 60) % 60:
+            buf.append("%d minuten" % ((delta.seconds // 60) % 60))
         if not buf:
             return "%s is nu actief!" % nick
         return "Laatste activiteit van %s was %s geleden" % \
