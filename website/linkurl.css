@@ -1,0 +1,38 @@
+body {
+	background:		rgb(86, 100, 115);
+	padding:		0;
+	margin:			0;
+	font-family:		Verdana, sans-serif;
+	color:			rgb(200,200,200);
+}
+
+div#content {
+	margin-left:		auto;
+	margin-right:		auto;
+	background:		rgb(106, 123, 142);
+}
+
+
+h1 {
+	text-align:		center;
+}
+
+thead {
+	padding:		0;
+	margin:			0;
+}
+
+th {
+	text-align:		left;
+	background:		rgb(149, 174, 200);
+}
+
+td {
+	vertical-align:		top;
+	border-top:		solid 1px;
+}
+
+a {
+	color:			rgb(230,230,230);
+	text-decoration:	none;
+}

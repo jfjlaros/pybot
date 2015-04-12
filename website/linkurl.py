@@ -21,7 +21,7 @@ print "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http:/
 print "<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">"
 print "  <head>"
 print "    <meta content=\"text/html; charset=utf-8\" http-equiv=\"Content-Type\" />"
-print "    <link href=\"http://lithium.liacs.nl/~bot/style/linkurl.css\" type=\"text/css\" rel=\"stylesheet\" />"
+print "    <link href=\"linkurl.css\" type=\"text/css\" rel=\"stylesheet\" />"
 print "    <title>UrlLog for #koffie</title>"
 print "  </head>"
 print "  <body>"
