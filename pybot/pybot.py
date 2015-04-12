@@ -87,7 +87,7 @@ class Bolt(logbot.LogBot, votebot.VoteBot, eddie.Eddie):
     
 
     def CommandUrlLog(self, nick, text):
-        return "http://irc.fixedpoint.nl/koffie/linkurl"
+        return "http://irc.fixedpoint.nl/koffie/"
 
 
     def CommandKlant(self, nick, text):
