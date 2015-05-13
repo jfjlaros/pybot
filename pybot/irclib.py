@@ -227,10 +227,10 @@ class IRC:
         """
         while 1:
             self.process_once(timeout)
-        if time.time()-self.connections[0].last_ping > 666:
-            self.connections[0].disconnect("Not pinged")
-            print "Ping timeout"
-            return
+            if time.time()-self.connections[0].last_ping > 666:
+                self.connections[0].disconnect("Not pinged")
+                print "Ping timeout"
+                return
 
 
     def disconnect_all(self, message=""):
