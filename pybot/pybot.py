@@ -84,10 +84,10 @@ class Bolt(logbot.LogBot, votebot.VoteBot, eddie.Eddie):
             self.logger.error("GetUserLevel failed: %s" % e)
 
         return 0
-    
+
 
     def CommandUrlLog(self, nick, text):
-        return "http://irc.fixedpoint.nl/koffie/"
+        return self.config["messages/linkurl"]
 
 
     def CommandKlant(self, nick, text):
