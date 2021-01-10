@@ -25,7 +25,7 @@ setup(
     url=distmeta.__homepage__,
     license='MIT License',
     platforms=['any'],
-    packages=['pybot'],
+    packages=['pybot', 'pyPgSQL'],
     install_requires=requires,
     entry_points = {
         'console_scripts': [
